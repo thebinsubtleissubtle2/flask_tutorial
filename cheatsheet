@@ -1,0 +1,74 @@
+<ul>
+    {% for comment in comments %}
+        <li>{{ comment }}</li>
+    {% endfor %}
+</ul>
+
+// macros
+{% macro render_comment(comment) %}
+    <li>{{ comment }}</li>
+{% endmacro %}
+<ul>
+    {% for comment in comments %}
+       {{ render_comment(comment) }}
+    {% endfor %}
+</ul>
+
+// importing macros
+{% import 'macros.html' as macros %}
+<ul>
+    {% for comment in comments %}
+        {{ macros.render_comment(comment) }}
+    {% endfor %}
+</ul>
+
+// include html file
+{% include 'common.html' %}
+
+<!-- {% extends "base.html" %}
+    {% block title %}
+        User
+    {% endblock %}
+    {% block head %}
+        {{ super() }}
+        <style>
+
+        </style>
+    {% endblock %}
+    {% block body %}
+        {% if user %}
+            <h1>Hello, {{ user|capitalize }}!</h1>
+        {% else %}
+            <h1>Hello, Stranger!</h1>
+        {% endif %}
+{% endblock %} -->
+
+<!-- <h1>
+    Hello, {{ name|capitalize }}!
+</h1> -->
+
+<!-- <h1>
+    Hello, {{ name|upper }}!
+</h1>
+
+<h1>
+    Hello, {{ name|title }}!
+</h1>
+
+<h1>
+    Hello, {{ name|trim }}!
+</h1>
+
+<h1>
+    Hello, {{ name|safe }}!
+</h1>
+
+<h1>
+    Hello, {{ name|striptags }}!
+</h1> -->
+
+<!-- {% if user %}
+    <h1>Hello, {{ user|capitalize }}!</h1>
+{% else %}
+    <h1>Hello, Stranger!</h1>
+{% endif %} -->
