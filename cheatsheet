@@ -72,3 +72,14 @@
 {% else %}
     <h1>Hello, Stranger!</h1>
 {% endif %} -->
+
+>>> Role.query.all()
+[<Role 'Administraitor'>, <Role 'User'>]
+>>> User.query.all()
+[<User 'john'>, <User 'susan'>, <User 'david'>]
+>>> User.query.filter_by(role = user_role).all()
+[<User 'susan'>, <User 'david'>]
+>>> str(User.query.filter_by(role = user_role))
+'SELECT users.id AS users_id, users.username AS users_username, users.role_id AS users_role_id \nFROM users \nWHERE ? = users.role_id'
+
+AttributeError: 'InstrumentedList' object has no attribute 'all'
