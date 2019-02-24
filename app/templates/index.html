@@ -27,8 +27,5 @@
         <p>That was {{ moment(current_time).fromNow(refresh=True) }}</p>
     </div>
 
-    {% block scripts %}
-        {{ super() }}
-        <script type = "text/javascript" src = "my-script.js"></script>
-    {% endblock %}
+    
 {% endblock %}
