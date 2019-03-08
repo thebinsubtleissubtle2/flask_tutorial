@@ -8,11 +8,20 @@
     bottom: 260px;
 }
 
+div.post-tabs {
+    margin-top: 16px;
+}
+
 ul.posts {
     list-style-type: none;
     padding: 0;
     margin: 16px 0 0 0;
     border-top: 1px solid #e0e0e0;
+}
+
+div.post-tabs ul.posts {
+    margin: 0;
+    border-top: none;
 }
 
 ul.posts li.post {
@@ -80,4 +89,8 @@ div.flask-pagedown-preview h3 {
 
 .post-body h3 {
     font-size: 120%;
+}
+
+.table-followers tr {
+    border-bottom: 1px solid #e0e0e0;
 }
