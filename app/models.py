@@ -36,10 +36,10 @@ class Role(db.Model):
         roles = {
             'User': [Permission.FOLLOW, Permission.COMMENT, Permission.WRITE],
             'Moderator': [Permission.FOLLOW, Permission.COMMENT,
-                        Permission.WRITE, Permission.MODERATE],
+                          Permission.WRITE, Permission.MODERATE],
             'Administrator': [Permission.FOLLOW, Permission.COMMENT,
-                            Permission.WRITE, Permission.MODERATE,
-                            Permission.ADMIN],
+                              Permission.WRITE, Permission.MODERATE,
+                              Permission.ADMIN],
         }
         default_role = 'User'
         for r in roles:
@@ -96,10 +96,10 @@ class User(UserMixin, db.Model):
     avatar_hash = db.Column(db.String(32))
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     followed = db.relationship('Follow',
-                                foreign_keys=[Follow.follower_id],
-                                backref=db.backref('follower', lazy='joined'),
-                                lazy='dynamic',
-                                cascade='all, delete-orphan')
+                               foreign_keys=[Follow.follower_id],
+                               backref=db.backref('follower', lazy='joined'),
+                               lazy='dynamic',
+                               cascade='all, delete-orphan')
     followers = db.relationship('Follow',
                                 foreign_keys=[Follow.followed_id],
                                 backref=db.backref('followed', lazy='joined'),
@@ -196,7 +196,7 @@ class User(UserMixin, db.Model):
 
     def can(self, perm):
         return self.role is not None and self.role.has_permission(perm)
-    
+
     def is_administrator(self):
         return self.can(Permission.ADMIN)
 
@@ -217,7 +217,7 @@ class User(UserMixin, db.Model):
         if not self.is_following(user):
             f = Follow(follower=self, followed=user)
             db.session.add(f)
-    
+
     def unfollow(self, user):
         f = self.followed.filter_by(followed_id=user.id).first()
         if f:
@@ -248,14 +248,14 @@ class User(UserMixin, db.Model):
             'last_seen': self.last_seen,
             'posts_url': url_for('api.get_user_posts', id=self.id),
             'followed_posts_url': url_for('api.get_user_followed_posts',
-                                            id=self.id),
+                                          id=self.id),
             'post_count': self.posts.count()
         }
         return json_user
 
     def generate_auth_token(self, expiration):
         s = Serializer(current_app.config['SECRET_KEY'],
-                        expires_in=expiration)
+                       expires_in=expiration)
         return s.dumps({'id': self.id}).decode('utf-8')
 
     @staticmethod
@@ -267,15 +267,14 @@ class User(UserMixin, db.Model):
             return None
         return User.query.get(data['id'])
 
-
     def __repr__(self):
-        return '<ID %r User %r>' % (self.id, self.username)
+        return '<User %r>' % self.username
 
 
 class AnonymousUser(AnonymousUserMixin):
     def can(self, permissions):
         return False
-    
+
     def is_administrator(self):
         return False
 
@@ -363,5 +362,6 @@ class Comment(db.Model):
         if body is None or body == '':
             raise ValidationError('comment does not have a body')
         return Comment(body=body)
+
 
 db.event.listen(Comment.body, 'set', Comment.on_changed_body)

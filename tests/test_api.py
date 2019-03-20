@@ -39,6 +39,72 @@ class APITestCase(unittest.TestCase):
         response = self.client.get('/api/v1/posts/', content_type='application/json')
         self.assertEqual(response.status_code, 401)
 
+    def test_bad_auth(self):
+        # add a user
+        r = Role.query.filter_by(name='User').first()
+        self.assertIsNotNone(r)
+        u = User(email='john@example.com', password='cat', confirmed=True,
+                 role=r)
+        db.session.add(u)
+        db.session.commit()
+
+        # authenticate with bad password
+        response = self.client.get(
+            '/api/v1/posts/',
+            headers=self.get_api_headers('john@example.com', 'dog'))
+        self.assertEqual(response.status_code, 401)
+
+    def test_token_auth(self):
+        # add a user
+        r = Role.query.filter_by(name='User').first()
+        self.assertIsNotNone(r)
+        u = User(email='john@example.com', password='cat', confirmed=True,
+                 role=r)
+        db.session.add(u)
+        db.session.commit()
+
+        # issue a request with a bad token
+        response = self.client.get(
+            '/api/v1/posts/',
+            headers=self.get_api_headers('bad-token', ''))
+        self.assertEqual(response.status_code, 401)
+
+        # get a token
+        response = self.client.post(
+            '/api/v1/tokens/',
+            headers=self.get_api_headers('john@example.com', 'cat'))
+        self.assertEqual(response.status_code, 200)
+        json_response = json.loads(response.get_data(as_text=True))
+        self.assertIsNotNone(json_response.get('token'))
+        token = json_response['token']
+
+        # issue a request with the token
+        response = self.client.get(
+            '/api/v1/posts/',
+            headers=self.get_api_headers(token, ''))
+        self.assertEqual(response.status_code, 200)
+
+    def test_anonymous(self):
+        response = self.client.get(
+            '/api/v1/posts/',
+            headers=self.get_api_headers('', ''))
+        self.assertEqual(response.status_code, 401)
+
+    def test_unconfirmed_account(self):
+        # add an unconfirmed user
+        r = Role.query.filter_by(name='User').first()
+        self.assertIsNotNone(r)
+        u = User(email='john@example.com', password='cat', confirmed=False,
+                 role=r)
+        db.session.add(u)
+        db.session.commit()
+
+        # get list of posts with the unconfirmed account
+        response = self.client.get(
+            '/api/v1/posts/',
+            headers=self.get_api_headers('john@example.com', 'cat'))
+        self.assertEqual(response.status_code, 403)
+
     def test_posts(self):
         # add a user
         r = Role.query.filter_by(name='User').first()

@@ -5,16 +5,14 @@
 
 {% block page_content %}
 <div class="page-header">
-    <img src="{{ user.gravatar(size=256) }}" alt="User avatar" class="img-rounded-profile-thumbnail">
+    <img class="img-rounded profile-thumbnail" src="{{ user.gravatar(size=256) }}">
     <div class="profile-header">
         <h1>{{ user.username }}</h1>
         {% if user.name or user.location %}
         <p>
             {% if user.name %}{{ user.name }}<br>{% endif %}
             {% if user.location %}
-                From <a href="http://maps.google.com/?q={{ user.location }}">
-                    {{ user.location }}
-                </a>
+                from <a href="http://maps.google.com/?q={{ user.location }}">{{ user.location }}</a><br>
             {% endif %}
         </p>
         {% endif %}
@@ -22,9 +20,8 @@
         <p><a href="mailto:{{ user.email }}">{{ user.email }}</a></p>
         {% endif %}
         {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
-        Member since {{ moment(user.member_since).format('L') }}.
-        Last seen {{ moment(user.last_seen).fromNow() }}.
-        <p>{{ user.posts.count() }} blog posts.</p>
+        <p>Member since {{ moment(user.member_since).format('L') }}. Last seen {{ moment(user.last_seen).fromNow() }}.</p>
+        <p>{{ user.posts.count() }} blog posts. {{ user.comments.count() }} comments.</p>
         <p>
             {% if current_user.can(Permission.FOLLOW) and user != current_user %}
                 {% if not current_user.is_following(user) %}
@@ -39,12 +36,12 @@
             | <span class="label label-default">Follows you</span>
             {% endif %}
         </p>
-        <p>    
+        <p>
             {% if user == current_user %}
-            <a href="{{ url_for('.edit_profile') }}" class="btn btn-default">Edit Profile</a>
+            <a class="btn btn-default" href="{{ url_for('.edit_profile') }}">Edit Profile</a>
             {% endif %}
             {% if current_user.is_administrator() %}
-            <a href="{{ url_for('.edit_profile_admin', id=user.id) }}" class="btn btn-danger">Edit Profile [Admin]</a>
+            <a class="btn btn-danger" href="{{ url_for('.edit_profile_admin', id=user.id) }}">Edit Profile [Admin]</a>
             {% endif %}
         </p>
     </div>

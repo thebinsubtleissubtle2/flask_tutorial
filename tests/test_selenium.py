@@ -28,7 +28,7 @@ class SeleniumTestCase(unittest.TestCase):
 
             # suppress logging to keep unittest output clean
             import logging
-            logger = logging.getLogger('wergzeug')
+            logger = logging.getLogger('werkzeug')
             logger.setLevel('ERROR')
 
             # create the database and populate with some fake data
@@ -78,7 +78,7 @@ class SeleniumTestCase(unittest.TestCase):
     def test_admin_home_page(self):
         # navigate to home page
         self.client.get('http://localhost:5000/')
-        self.assertTrue(re.search(r'Hello,\s+Stranger!',
+        self.assertTrue(re.search('Hello,\s+Stranger!',
                                     self.client.page_source))
 
         # navigate to login page
@@ -88,9 +88,9 @@ class SeleniumTestCase(unittest.TestCase):
         # log in
         self.client.find_element_by_name('email').\
                                 send_keys('john@example.com')
-        self.client.find_element_by_name('password').send_keys('cat')
+        self.client.find_element_by_name('password').send_keys('mew')
         self.client.find_element_by_name('submit').click()
-        self.assertTrue(re.search(r'Hello,\s+john!', self.client.page_source))
+        self.assertTrue(re.search('Hello,\s+john!', self.client.page_source))
     
         # navigate to the user's profile page
         self.client.find_element_by_link_text('Profile').click()
